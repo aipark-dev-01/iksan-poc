@@ -1,18 +1,18 @@
 import { useState } from 'react'
-import './App.css'
 import MenuList from './MenuList'
 import VideoPlayer from './VideoPlayer'
 
 export const VIDEO_BASE_PATH = '/iksan-poc/samples'
 
-const videoFilenames = [
-  'result_city_brand.webm',
-  'result_hologram_festival.webm',
-  'result_industry.webm',
-  'result_tourist_spot.webm',
-]
+type Props = {
+  videoFilenames: Array<{
+    url: string
+    thumbnailUrl: string
+  }>
+  cleanupOnEnded?: boolean
+}
 
-function App() {
+function VideoList({ videoFilenames, cleanupOnEnded }: Props) {
   const [videoIdx, setVideoIdx] = useState<number | null>(null)
 
   return (
@@ -20,8 +20,14 @@ function App() {
       <div>
         {videoIdx !== null ? (
           <VideoPlayer
-            src={`${VIDEO_BASE_PATH}/${videoFilenames[videoIdx]}`}
-            onEnded={() => setVideoIdx(null)}
+            src={`${VIDEO_BASE_PATH}/${videoFilenames[videoIdx].url}`}
+            onEnded={
+              cleanupOnEnded
+                ? () => {
+                    setVideoIdx(null)
+                  }
+                : undefined
+            }
             onClose={() => setVideoIdx(null)}
           />
         ) : (
@@ -32,4 +38,4 @@ function App() {
   )
 }
 
-export default App
+export default VideoList
